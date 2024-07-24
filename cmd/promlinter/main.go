@@ -60,7 +60,6 @@ func init() {
 }
 
 func main() {
-
 	app := kingpin.New(filepath.Base(os.Args[0]), help)
 	app.Version("v0.0.3")
 	app.HelpFlag.Short('h')
@@ -92,7 +91,12 @@ func main() {
 	res := 0
 	switch parsedCmd {
 	case listCmd.FullCommand():
-		metrics := promlinter.RunList(fileSet, findFiles(*listPaths, fileSet), *listStrict)
+
+		log.Printf("starting...")
+
+		metrics := promlinter.RunList(fileSet,
+			findFiles(*listPaths, fileSet),
+			*listStrict)
 		p := printer{
 			fmt:         *listPrintFormat,
 			addHelp:     *listPrintAddHelp,
@@ -114,15 +118,20 @@ func main() {
 }
 
 func findFiles(paths []string, fileSet *token.FileSet) []*ast.File {
+
+	log.Printf("findFiles under %+#v...", paths)
+
 	var files []*ast.File
 	for _, path := range paths {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
+			log.Printf("ERROR: %s", err.Error())
 			os.Exit(1)
 		}
 		for f := range walkDir(path) {
 			file, err := parser.ParseFile(fileSet, f, nil, parser.AllErrors)
 			if err != nil {
-				os.Exit(1)
+				log.Printf("WARN: %s", err.Error())
+				continue
 			}
 			files = append(files, file)
 		}
@@ -157,6 +166,8 @@ func walkDir(root string) chan string {
 }
 
 func (p *printer) printDefault() {
+	log.Printf("printMetrics...")
+
 	tw := tabwriter.NewWriter(os.Stdout, 20, 1, 3, ' ', 0)
 	defer tw.Flush()
 

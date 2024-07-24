@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -126,7 +127,10 @@ func RunList(fs *token.FileSet, files []*ast.File, strict bool) []MetricFamilyWi
 		strict:  strict,
 	}
 
+	log.Printf("list in %+#v", files)
+
 	for _, file := range files {
+		log.Printf("walk on %s...", file)
 		ast.Walk(v, file)
 	}
 
