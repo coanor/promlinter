@@ -1,5 +1,5 @@
-GOOS := $(if $(GOOS),$(GOOS),linux)
-GOARCH := $(if $(GOARCH),$(GOARCH),amd64)
+GOOS := $(if $(GOOS),$(GOOS),darwin)
+GOARCH := $(if $(GOARCH),$(GOARCH),arm64)
 GO=CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on go
 GOVERSION = $(shell $(GO) version | cut -c 14- | cut -d' ' -f1)
 
