@@ -130,7 +130,7 @@ func RunList(fs *token.FileSet, files []*ast.File, strict bool) []MetricFamilyWi
 	log.Printf("list in %+#v", files)
 
 	for _, file := range files {
-		log.Printf("walk on %s...", file)
+		log.Printf("walk on %v...", file)
 		ast.Walk(v, file)
 	}
 
